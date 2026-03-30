@@ -11,20 +11,23 @@
 
 #define PI 3.14159265
 
+#define BEAT_THRESHOLD_INITIAL			1.4
+
 #define ACTIVATION_THRESHOLD 			60.0
-#define RUNNING_AVG_ENERGY_ADAPT_RATE 	0.98
+#define RUNNING_AVG_ENERGY_ADAPT_RATE 	0.99
 #define RUNNING_AVG_WAIT_ADAPT_RATE   	0.8
 #define RUNNING_AVG_SPECTRUM_ADAPT_RATE 0.5
-#define BEAT_THRESHOLD_ADAPT_RATE     	0.9
+#define BEAT_THRESHOLD_ADAPT_RATE     	0.95
 #define BEAT_THRESHOLD_SENSITISE_RATE 	0.95
-#define TIME_WEIGHT_EXPONENT 			3.5
+#define TIME_WEIGHT_EXPONENT 			2.0
+#define TIME_WEIGHT_MAX					1.2
 #define ANGLE_WEIGHT					1.2
 
 #define AMP_BASS_WEIGHT					1.5
 #define AMP_SNAP_WEIGHT					0.3
 #define AMP_CRACK_WEIGHT				0.1
 
-#define WAIT_NORMALISATION_FACTOR 		0.025
+#define WAIT_NORMALISATION_FACTOR 		0.25
 
 #define NORM_FACTOR 					(1.0 / (double)(1 << 23))
 
@@ -119,7 +122,7 @@ int init_beat_detection_state(beat_detection_state *bds)
 	assert(bds != NULL);
 
 	// Initialise with default values
-	bds->beat_threshold 				= 1.3;
+	bds->beat_threshold 				= BEAT_THRESHOLD_INITIAL;
 	
 	// Assume 120bpm and that a beat is expected immediately
 	bds->running_avg_wait 				= 0.5;
@@ -235,7 +238,7 @@ double cos_angle_weighting_factor(double cos_angle, double m)
 	 * having to use acos and then cos to calculate cos(2x) (costly!!) */
 	double cos_double_angle = 2.0 * sqr(cos_angle) - 1.0;
 	
-	return 1.0 + m / 2.0 - (m / 2.0 - 1.0) * cos_double_angle;
+	return 1.0 + 0.5 * m - (0.5 * m - 1.0) * cos_double_angle;
 }
 
 /* Calculate the ``energy'' of the given frame using the raw data (not actually used - but still passed
@@ -352,6 +355,10 @@ int beat_detected(beat_detection_state *bds, const double *frame, const double *
 	
 	// Calculate a weight that inhibits detecting beats unusually quickly, and disinhibits detecting beats unusually slowly
 	time_weighting = pow(inv_erf_1 * erf(bds->seconds_since_last_beat / bds->running_avg_wait), TIME_WEIGHT_EXPONENT);
+	
+	// Cap it off at a max value; tinkering with TIME_WEIGHT_EXPONENT results in different limits as time -> inf, some much too high
+	if (time_weighting > TIME_WEIGHT_MAX)
+		time_weighting = TIME_WEIGHT_MAX;
 	
 	// Determine whether anything is happening and control whether the LEDs are on
 	active = (bds->frame_energy_running_avg > ACTIVATION_THRESHOLD) || (energy > ACTIVATION_THRESHOLD);

@@ -1,8 +1,8 @@
 #ifndef LED_CONTROL_H_
 #define LED_CONTROL_H_
 
-#define LED_PIN_1 GPIO_NUM_26
-#define LED_PIN_2 GPIO_NUM_27
+#define LED_PIN_1 1
+#define LED_PIN_2 2
 
 int init_leds();
 void swap_leds();

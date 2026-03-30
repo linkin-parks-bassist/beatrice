@@ -2,9 +2,9 @@
 #define MIC_H_
 
 #define SAMPLE_RATE 22050
-#define I2S_SCK  33
-#define I2S_WS   25
-#define I2S_SD   32
+#define I2S_SCK  7
+#define I2S_WS   8
+#define I2S_SD   9
 
 int init_mic();
 
