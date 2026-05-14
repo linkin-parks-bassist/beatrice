@@ -1,0 +1,5 @@
+﻿Designator,Footprint,Quantity,Value,LCSC Part #
+C1,0603,1,0.1uF,
+"C2, C3",0603,2,1uF,
+T1,T5848,1,~,
+U2,SOT-23-5,1,TLV75518PDBV,

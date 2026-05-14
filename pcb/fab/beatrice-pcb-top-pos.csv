@@ -1,0 +1,9 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+C1,0.1uF,C_0603_1608Metric,156,-132,90,top
+C2,1uF,C_0603_1608Metric,157.8665,-131.13,270,top
+C3,1uF,C_0603_1608Metric,162.687,-131.831,0,top
+J1,Conn_01x02_Socket,PinHeader_1x02_P2.54mm_Vertical,210.7565,-73.5965,90,top
+J2,Conn_01x02_Socket,PinHeader_1x02_P2.54mm_Vertical,105.3415,-73.5965,90,top
+SW1,SW_Push,SW_PUSH_6mm,155.575,-100.965,180,top
+T1,~,T5848,154.607,-128.8,90,top
+U2,TLV75518PDBV,SOT-23-5,160.7875,-129.352,180,top
